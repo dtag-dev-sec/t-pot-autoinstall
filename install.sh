@@ -44,7 +44,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-echo "Which user do you usually work with?\nThis script is invoked by root, but what is your normal username?"
+echo -en "Which user do you usually work with?\nThis script is invoked by root, but what is your normal username?"
 echo -n "Enter username: "
 read myuser
 
