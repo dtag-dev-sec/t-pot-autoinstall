@@ -192,9 +192,9 @@ apt-get autoremove -y
 
 # Let's remove NGINX default website
 fuECHO "### Removing NGINX default website."
-rm /etc/nginx/sites-enabled/default
-rm /etc/nginx/sites-available/default
-rm /usr/share/nginx/html/index.html
+[ -f /etc/nginx/sites-enabled ] && rm /etc/nginx/sites-enabled/default
+[ -f /etc/nginx/sites-avaliable ] && rm /etc/nginx/sites-available/default
+[ -f /usr/share/nginx/html/index.html ] && rm /usr/share/nginx/html/index.html
 
 # Let's ask user for a password for the web user
 myOK="n"
@@ -241,7 +241,7 @@ fuECHO "### Installing alerta-cli."
 pip install --upgrade pip
 pip install alerta
 fuECHO "### Installing wetty."
-ln -s /usr/bin/nodejs /usr/bin/node
+[ ! -f /usr/bin/node ] && ln -s /usr/bin/nodejs /usr/bin/node
 npm install https://github.com/t3chn0m4g3/wetty -g
 
 
