@@ -115,36 +115,6 @@ if ! grep -q $myuser /etc/passwd
 fi
 
 
-# check if ssh daemon is running
-sshstatus=$(service ssh status)
-if [[ ! $sshstatus =~ "active (running)" ]];
-	then
-		echo "### SSH is not running. Script will abort!"
-		exit 1
-fi
-
-# check for available, non-empty SSH key
-if ! fgrep -qs ssh /home/$myuser/.ssh/authorized_keys
-    then
-        fuECHO "### No SSH key for user '$myuser' found in /home/$myuser/.ssh/authorized_keys.\n ### Script will abort!"
-        exit 1
-fi
-
-# check for default SSH port
-sshport=$(fgrep Port /etc/ssh/sshd_config|cut -d ' ' -f2)
-if [ $sshport != 22 ];
-    then
-        fuECHO "### SSH port is not 22. Script will abort!"
-        exit 1
-fi
-
-# check if pubkey authentication is active
-if ! fgrep -q "PubkeyAuthentication yes" /etc/ssh/sshd_config
-	then
-		fuECHO "### Public Key Authentication is disabled /etc/ssh/sshd_config. \n ### Enable it by changing PubkeyAuthentication to 'yes'."
-		exit 1
-fi
-
 # check for ubuntu 16.04. distribution
 release=$(lsb_release -r|cut -d $'\t' -f2)
 if [ $release != "16.04" ]
@@ -153,12 +123,6 @@ if [ $release != "16.04" ]
         exit 1
 fi
 
-# Let's make sure there is a warning if running for a second time
-if [ -f install.log ];
-  then
-        fuECHO "### Running more than once may complicate things. Erase install.log if you are really sure."
-        exit 1
-fi
 
 # set locale
 locale-gen "en_US.UTF-8"
@@ -170,6 +134,7 @@ set -e
 exec 2> >(tee "install.err")
 exec > >(tee "install.log")
 
+apt install python-setuptools
 
 echo "Everything looks OK..."
 echo ""
